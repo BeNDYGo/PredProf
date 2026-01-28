@@ -7,6 +7,7 @@
     <style>
         body {
             display: flex;
+            background-color: rgba(0, 0, 0, 0.698);
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -35,45 +36,6 @@
         <div id="message"></div>
     </div>
 
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const messageDiv = document.getElementById('message');
-            
-            if (password !== confirmPassword) {
-                messageDiv.textContent = 'Passwords do not match';
-                messageDiv.style.color = 'red';
-                return;
-            }
-            
-            try {
-                const response = await fetch('http://localhost:8080/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-                });
-                
-                const result = await response.json();
-                
-                if (response.ok) {
-                    messageDiv.textContent = result.message;
-                    document.getElementById('registerForm').reset();
-                } else {
-                    messageDiv.textContent = result.error || 'Registration failed';
-                }
-            } catch (error) {
-                messageDiv.textContent = 'Error: ' + error.message;
-            }
-        });
-    </script>
+    <script src="main.js"></script>
 </body>
 </html>

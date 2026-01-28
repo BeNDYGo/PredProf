@@ -14,6 +14,7 @@ type User struct {
 var Users = make(map[string]User)
 
 func register(w http.ResponseWriter, r *http.Request) {
+	// Что-то для браузера
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
@@ -23,6 +24,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Логика получения данных от пользователя
 	if r.Method == "POST" {
 		var user User
 		err := json.NewDecoder(r.Body).Decode(&user)
@@ -33,8 +35,9 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 		Users[user.Username] = user
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(map[string]string{"message": "User registered successfully"})
+		json.NewEncoder(w).Encode(map[string]string{"message": "Регистрация прошла успешно"})
 		fmt.Println("User:", user.Username, "Password:", user.Password)
+		fmt.Println("Users:", Users)
 		return
 	}
 
