@@ -15,7 +15,6 @@ type User struct {
 }
 
 var db *sql.DB
-var Users = make(map[string]User)
 
 func userExists(username string) bool {
 	row := db.QueryRow("SELECT username FROM users WHERE username = ?", username)

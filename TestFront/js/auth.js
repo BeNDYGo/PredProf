@@ -2,6 +2,10 @@ function goToRegister() {
     window.location.href = 'register.html';
 }
 
+function goToTasks() {
+    window.location.href = 'tasks.html';
+}
+
 function checkAuth() {
     const username = localStorage.getItem('username');
     if (username) {
