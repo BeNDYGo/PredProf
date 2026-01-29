@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"predprof/database"
+	"predprof/usersDatabase"
 )
 
 type User struct {
@@ -43,14 +43,14 @@ func register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if database.UserExists(user.Username) {
+	if usersDatabase.UserExists(user.Username) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusConflict)
 		json.NewEncoder(w).Encode(map[string]string{"error": "user already exists"})
 		return
 	}
 
-	err = database.CreateUser(user.Username, user.Password)
+	err = usersDatabase.CreateUser(user.Username, user.Password)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
@@ -79,7 +79,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !database.UserExists(user.Username) {
+	if !usersDatabase.UserExists(user.Username) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(map[string]string{"error": "user not found"})
@@ -92,7 +92,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	err := database.InitDB()
+	err := usersDatabase.InitDB()
 	if err != nil {
 		panic(err)
 	}
