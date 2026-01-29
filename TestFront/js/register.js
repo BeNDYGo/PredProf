@@ -1,3 +1,6 @@
+const mainPage = 'main.html';
+const server = 'http://localhost:8080';
+
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -13,7 +16,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     }
     
     try {
-        const response = await fetch('http://localhost:8080/register', {
+        const response = await fetch(server + '/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -28,7 +31,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         
         if (response.ok) {
             localStorage.setItem('username', username);
-            window.location.href = 'index.html';
+            window.location.href = mainPage;
         } else {
             messageDiv.textContent = result.error;
             messageDiv.style.color = 'red';

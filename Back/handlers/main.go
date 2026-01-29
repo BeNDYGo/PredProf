@@ -29,13 +29,6 @@ func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
-
-	// Логика получения данных от пользователя
-	if r.Method != "POST" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -65,13 +58,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-
-	// Логика получения данных от пользователя
-	if r.Method != "POST" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
 	var user User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
@@ -91,6 +77,48 @@ func login(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "user logged in successfully"})
 }
 
+func getTasks(w http.ResponseWriter, r *http.Request) {
+	subject := r.URL.Query().Get("subject")
+	if subject == "" {
+		http.Error(w, "subject parameter is required", http.StatusBadRequest)
+		return
+	}
+
+	tasks, err := usersDatabase.GetTasks(subject)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(tasks)
+}
+
+func AddTask(w http.ResponseWriter, r *http.Request) {
+	var task usersDatabase.Task
+	err := json.NewDecoder(r.Body).Decode(&task)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = usersDatabase.AddTask(r.URL.Query().Get("subject"), task.Task, task.Answer)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]string{"message": "task added"})
+	fmt.Println("Task added")
+}
+
 func main() {
 	err := usersDatabase.InitDB()
 	if err != nil {
@@ -99,6 +127,8 @@ func main() {
 
 	http.HandleFunc("/register", corsMiddleware(register))
 	http.HandleFunc("/login", corsMiddleware(login))
+	http.HandleFunc("/getTasks", corsMiddleware(getTasks))
+	http.HandleFunc("/addTask", corsMiddleware(AddTask))
 	fmt.Println("Server starting")
 	http.ListenAndServe(":8080", nil)
 }

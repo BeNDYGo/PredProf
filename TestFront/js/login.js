@@ -1,3 +1,6 @@
+const mainPage = 'main.html';
+const server = 'http://localhost:8080';
+
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -6,7 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const messageDiv = document.getElementById('message');
     
     try {
-        const response = await fetch('http://localhost:8080/login', {
+        const response = await fetch(server + '/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -21,7 +24,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         
         if (response.ok) {
             localStorage.setItem('username', username);
-            window.location.href = 'index.html';
+            window.location.href = mainPage;
         } else {
             messageDiv.textContent = result.error;
             messageDiv.style.color = 'red';

@@ -1,2 +1,4 @@
 .DS_Store
-**/users.db
+#**/users.db
+#**/tasks_rus.db
+#**/tasks_math.db

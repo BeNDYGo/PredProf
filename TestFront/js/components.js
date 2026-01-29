@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEST</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <header class="header">
+document.getElementById('header-container').innerHTML = `
+        <div class="header">
         <div class="logo">TEST</div>
         <div class="navigation">
             <button class="tasks-btn" onclick="goToTasks()">Задания</button>
@@ -16,8 +8,5 @@
             <button class="register-btn" onclick="goToRegister()">Регистрация</button>
             <button class="login-btn" onclick="login()">Войти</button>
         </div>
-    </header>
-
-    <script src="js/auth.js"></script>
-</body>
-</html>
+        </div>
+`
