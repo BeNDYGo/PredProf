@@ -1,12 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	_ "github.com/mattn/go-sqlite3"
+	"predprof/database"
 )
 
 type User struct {
@@ -14,25 +13,22 @@ type User struct {
 	Password string `json:"password"`
 }
 
-var db *sql.DB
+func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-func userExists(username string) bool {
-	row := db.QueryRow("SELECT username FROM users WHERE username = ?", username)
-	var u string
-	err := row.Scan(&u)
-	return err == nil
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next(w, r)
+	}
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
-	// Что-то для браузера
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 
 	// Логика получения данных от пользователя
 	if r.Method != "POST" {
@@ -47,18 +43,14 @@ func register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userExists(user.Username) {
+	if database.UserExists(user.Username) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusConflict)
 		json.NewEncoder(w).Encode(map[string]string{"error": "user already exists"})
 		return
 	}
 
-	_, err = db.Exec(
-		"INSERT INTO users(username, password) VALUES(?, ?)",
-		user.Username,
-		user.Password,
-	)
+	err = database.CreateUser(user.Username, user.Password)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
@@ -73,15 +65,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	// Что-то для браузера
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
 
 	// Логика получения данных от пользователя
 	if r.Method != "POST" {
@@ -96,7 +79,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !userExists(user.Username) {
+	if !database.UserExists(user.Username) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(map[string]string{"error": "user not found"})
@@ -109,23 +92,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	var err error
-	db, err = sql.Open("sqlite3", "./users.db")
-	if err != nil {
-		panic(err)
-	}
-	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS users (
-			username TEXT PRIMARY KEY,
-			password TEXT
-		)
-	`)
+	err := database.InitDB()
 	if err != nil {
 		panic(err)
 	}
 
-	http.HandleFunc("/register", register)
-	http.HandleFunc("/login", login)
+	http.HandleFunc("/register", corsMiddleware(register))
+	http.HandleFunc("/login", corsMiddleware(login))
 	fmt.Println("Server starting")
 	http.ListenAndServe(":8080", nil)
 }
