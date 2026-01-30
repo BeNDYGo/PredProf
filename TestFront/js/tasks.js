@@ -19,6 +19,11 @@ async function getTasks(subject){
     }
 }
 
+function showAnswer(index){
+    var answerElement = document.getElementById(`answer-${index}`);
+    answerElement.style.display = answerElement.style.display === 'none' ? 'block' : 'none';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     var subjectElement = document.getElementById("subject");
     subjectElement.addEventListener("change", async function(){
@@ -37,7 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 htmlContent += `<div class="task-item">
                     <h3>Задание ${index + 1}</h3>
                     <p>${task.task.replace(/\n/g, '<br>')}</p>
-                    <p><strong>Ответ:</strong> ${task.answer}</p>
+                    <button class="show-answer-btn" onclick="showAnswer(${index})">Показать ответ</button>
+                    <p id="answer-${index}" style="display: none"><strong>Ответ:</strong> ${task.answer}</p>
                 </div>`;
             });
             tasksDiv.innerHTML = htmlContent;
