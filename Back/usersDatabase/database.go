@@ -8,8 +8,10 @@ import (
 )
 
 type Task struct {
-	Task   string `json:"task"`
-	Answer string `json:"answer"`
+	Task       string `json:"task"`
+	Answer     string `json:"answer"`
+	TaskType   string `json:"taskType,omitempty"`
+	Difficulty string `json:"difficulty,omitempty"`
 }
 
 var usersDB *sql.DB
@@ -43,7 +45,9 @@ func InitDB() error {
 		CREATE TABLE IF NOT EXISTS tasks (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			task TEXT NOT NULL,
-			answer TEXT NOT NULL
+			answer TEXT NOT NULL,
+			taskType TEXT,
+			difficulty TEXT
 		)
 	`)
 	if err != nil {
@@ -60,7 +64,9 @@ func InitDB() error {
 		CREATE TABLE IF NOT EXISTS tasks (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			task TEXT NOT NULL,
-			answer TEXT NOT NULL
+			answer TEXT NOT NULL,
+			taskType TEXT,
+			difficulty TEXT
 		)
 	`)
 	return err
@@ -82,7 +88,7 @@ func CreateUser(username, password string) error {
 	return err
 }
 
-func GetTasks(subject string) ([]Task, error) {
+func GetTasks(subject string, taskType string, difficulty string) ([]Task, error) {
 	var targetDB *sql.DB
 	switch subject {
 	case "rus":
@@ -93,7 +99,20 @@ func GetTasks(subject string) ([]Task, error) {
 		return nil, fmt.Errorf("unknown subject: %s", subject)
 	}
 
-	rows, err := targetDB.Query("SELECT task, answer FROM tasks")
+	query := "SELECT task, answer, taskType, difficulty FROM tasks WHERE 1=1"
+	args := []interface{}{}
+
+	if taskType != "" && taskType != "none" {
+		query += " AND taskType = ?"
+		args = append(args, taskType)
+	}
+
+	if difficulty != "" && difficulty != "none" {
+		query += " AND difficulty = ?"
+		args = append(args, difficulty)
+	}
+
+	rows, err := targetDB.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +121,7 @@ func GetTasks(subject string) ([]Task, error) {
 	var tasks []Task
 	for rows.Next() {
 		var task Task
-		err := rows.Scan(&task.Task, &task.Answer)
+		err := rows.Scan(&task.Task, &task.Answer, &task.TaskType, &task.Difficulty)
 		if err != nil {
 			return nil, err
 		}
@@ -112,7 +131,7 @@ func GetTasks(subject string) ([]Task, error) {
 	return tasks, nil
 }
 
-func AddTask(subject string, task string, answer string) error {
+func AddTask(subject string, task string, answer string, taskType string, difficulty string) error {
 	var targetDB *sql.DB
 	switch subject {
 	case "rus":
@@ -124,9 +143,11 @@ func AddTask(subject string, task string, answer string) error {
 	}
 
 	_, err := targetDB.Exec(
-		"INSERT INTO tasks(task, answer) VALUES(?, ?)",
+		"INSERT INTO tasks(task, answer, taskType, difficulty) VALUES(?, ?, ?, ?)",
 		task,
 		answer,
+		taskType,
+		difficulty,
 	)
 	return err
 }

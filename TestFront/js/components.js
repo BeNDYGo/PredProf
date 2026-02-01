@@ -1,6 +1,6 @@
 document.getElementById('header-container').innerHTML = `
         <div class="header">
-        <div class="logo">TEST</div>
+        <div class="logo" onclick="goToMain()">TEST</div>
         <div class="navigation">
             <button class="tasks-btn" onclick="goToTasks()">Задания</button>
         </div>
@@ -10,3 +10,7 @@ document.getElementById('header-container').innerHTML = `
         </div>
         </div>
 `
+
+function goToMain() {
+    window.location.href = 'main.html';
+}

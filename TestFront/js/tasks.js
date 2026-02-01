@@ -1,8 +1,16 @@
 const server = 'http://localhost:8080';
 
-async function getTasks(subject){
+async function getTasks(subject, taskType = "", difficulty = ""){
     try {
-        const response = await fetch(server + '/getTasks?subject=' + encodeURIComponent(subject),{
+        let url = server + '/getTasks?subject=' + encodeURIComponent(subject);
+        if (taskType && taskType !== "none") {
+            url += '&taskType=' + encodeURIComponent(taskType);
+        }
+        if (difficulty && difficulty !== "none") {
+            url += '&difficulty=' + encodeURIComponent(difficulty);
+        }
+        
+        const response = await fetch(url, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -24,17 +32,23 @@ function showAnswer(index){
     answerElement.style.display = answerElement.style.display === 'none' ? 'block' : 'none';
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     var subjectElement = document.getElementById("subject");
-    subjectElement.addEventListener("change", async function(){
-        var selectedValue = subjectElement.value;
-        if (selectedValue === "none") return;
+    var taskTypeElement = document.getElementById("taskType");
+    var difficultyElement = document.getElementById("difficulty");
+    
+    async function loadTasks() {
+        var selectedSubject = subjectElement.value;
+        var selectedTaskType = taskTypeElement.value;
+        var selectedDifficulty = difficultyElement.value;
+        
+        if (selectedSubject === "none") return;
 
-        var tasksDiv = document.querySelector(".tasks");
+        var tasksDiv = document.getElementById("tasks");
         try {
-            const tasks = await getTasks(selectedValue);
+            const tasks = await getTasks(selectedSubject, selectedTaskType, selectedDifficulty);
             if (tasks === null){
-                tasksDiv.innerHTML = "Error";
+                tasksDiv.innerHTML = "Нет заданий";
                 return;
             }
             let htmlContent = '';
@@ -47,8 +61,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>`;
             });
             tasksDiv.innerHTML = htmlContent;
-        } catch {
+        } catch (error) {
             tasksDiv.innerHTML = "Error";
         }
-    });
+    }
+    
+    subjectElement.addEventListener("change", loadTasks);
+    taskTypeElement.addEventListener("change", loadTasks);
+    difficultyElement.addEventListener("change", loadTasks);
 });

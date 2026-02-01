@@ -84,7 +84,10 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tasks, err := usersDatabase.GetTasks(subject)
+	taskType := r.URL.Query().Get("taskType")
+	difficulty := r.URL.Query().Get("difficulty")
+
+	tasks, err := usersDatabase.GetTasks(subject, taskType, difficulty)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -105,7 +108,13 @@ func AddTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = usersDatabase.AddTask(r.URL.Query().Get("subject"), task.Task, task.Answer)
+	subject := r.URL.Query().Get("subject")
+	if subject == "" {
+		http.Error(w, "subject parameter is required", http.StatusBadRequest)
+		return
+	}
+
+	err = usersDatabase.AddTask(subject, task.Task, task.Answer, task.TaskType, task.Difficulty)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)

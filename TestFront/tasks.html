@@ -10,17 +10,30 @@
 <body>
     <div id="header-container"></div>
     <div class="container">
-        <h1>Задания</h1>
-        <h3>Выберите предмет:</h3>
+    <h1>Задания</h1>
+    <h3>Выберите предмет:</h3>
+    <div class="subjects">
         <select name="subject" id="subject">
             <option value="none">Выберите предмент</option>
             <option value="rus">Русский</option>
         </select>
+        <select name="taskType" id="taskType">
+            <option value="none">Выберите тип</option>
+            <option value="type4">Задание 4</option>
+            <option value="type5">Задание 5</option>
+        </select>
+        <select name="difficulty" id="difficulty">
+            <option value="none">Выберите сложность</option>
+            <option value="easy">легко</option>
+            <option value="medium">средне</option>
+            <option value="hard">тяжело</option>
+        </select>
     </div>
-    <div class="tasks">
+    <div class="tasks" id="tasks">
 
     </div>
     <script src="js/components.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/tasks.js"></script>
 </body>
 </html>
