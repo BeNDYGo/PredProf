@@ -127,7 +127,6 @@ func AddTask(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "task added"})
 	fmt.Println("Task added")
 }
-
 func main() {
 	err := usersDatabase.InitDB()
 	if err != nil {
@@ -139,5 +138,7 @@ func main() {
 	http.HandleFunc("/getTasks", corsMiddleware(getTasks))
 	http.HandleFunc("/addTask", corsMiddleware(AddTask))
 	fmt.Println("Server starting")
-	http.ListenAndServe(":8080", nil)
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		fmt.Println(err)
+	}
 }
