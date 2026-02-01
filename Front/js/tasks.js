@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             let htmlContent = '';
             tasks.forEach((task, index) => {
                 htmlContent += `<div class="task-item">
-                    <h3>Задание ${index + 1}</h3>
+                    <h3>----------</h3>
                     <p>${task.task.replace(/\n/g, '<br>')}</p>
                     <button class="show-answer-btn" onclick="showAnswer(${index})">Показать ответ</button>
                     <p id="answer-${index}" style="display: none"><strong>Ответ:</strong> ${task.answer}</p>

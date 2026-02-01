@@ -1,4 +1,4 @@
-package usersDatabase
+package tasksDatabase
 
 import (
 	"database/sql"
@@ -14,29 +14,13 @@ type Task struct {
 	Difficulty string `json:"difficulty,omitempty"`
 }
 
-var usersDB *sql.DB
 var tasksRusDB *sql.DB
 var tasksMathDB *sql.DB
 
 func InitDB() error {
 	var err error
-	usersDB, err = sql.Open("sqlite3", "./users.db")
-	if err != nil {
-		return err
-	}
 
-	_, err = usersDB.Exec(`
-		CREATE TABLE IF NOT EXISTS users (
-			username TEXT PRIMARY KEY,
-			password TEXT
-		)
-	`)
-	if err != nil {
-		return err
-	}
-
-	// Initialize tasks database for Russian
-	tasksRusDB, err = sql.Open("sqlite3", "./tasks_rus.db")
+	tasksRusDB, err = sql.Open("sqlite3", "./databases/tasksDatabase/tasks_rus.db")
 	if err != nil {
 		return err
 	}
@@ -54,8 +38,7 @@ func InitDB() error {
 		return err
 	}
 
-	// Initialize tasks database for Math
-	tasksMathDB, err = sql.Open("sqlite3", "./tasks_math.db")
+	tasksMathDB, err = sql.Open("sqlite3", "./databases/tasksDatabase/tasks_math.db")
 	if err != nil {
 		return err
 	}
@@ -69,22 +52,6 @@ func InitDB() error {
 			difficulty TEXT
 		)
 	`)
-	return err
-}
-
-func UserExists(username string) bool {
-	row := usersDB.QueryRow("SELECT username FROM users WHERE username = ?", username)
-	var u string
-	err := row.Scan(&u)
-	return err == nil
-}
-
-func CreateUser(username, password string) error {
-	_, err := usersDB.Exec(
-		"INSERT INTO users(username, password) VALUES(?, ?)",
-		username,
-		password,
-	)
 	return err
 }
 
@@ -150,8 +117,4 @@ func AddTask(subject string, task string, answer string, taskType string, diffic
 		difficulty,
 	)
 	return err
-}
-
-func GetDB() *sql.DB {
-	return usersDB
 }
