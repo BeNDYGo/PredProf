@@ -24,7 +24,8 @@ func InitDB() error {
 	_, err = usersDB.Exec(`
 		CREATE TABLE IF NOT EXISTS users (
 			username TEXT PRIMARY KEY,
-			password TEXT
+			password TEXT,
+			rating   INT
 		)
 	`)
 	if err != nil {
@@ -40,11 +41,21 @@ func UserExists(username string) bool {
 	return err == nil
 }
 
-func CreateUser(username, password string) error {
+func CreateUser(username string, password string, rating int64) error {
 	_, err := usersDB.Exec(
 		"INSERT INTO users(username, password) VALUES(?, ?)",
 		username,
 		password,
 	)
 	return err
+}
+
+func GetRating(username string) (int64, error) {
+	row := usersDB.QueryRow("SELECT rating FROM users WHERE username = ?", username)
+	var rating int64
+	err := row.Scan(&rating)
+	if err != nil {
+		return 0, err
+	}
+	return rating, nil
 }

@@ -3,6 +3,7 @@ document.getElementById('header-container').innerHTML = `
         <div class="logo" onclick="goToMain()">TEST</div>
         <div class="navigation">
             <button class="tasks-btn" onclick="goToTasks()">Задания</button>
+            <button class="tasks-btn" onclick="goToTasks()">Задания</button>
         </div>
         <div id="auth-section">
             <button class="register-btn" onclick="goToRegister()">Регистрация</button>
