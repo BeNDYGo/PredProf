@@ -7,6 +7,7 @@ import (
 	"predprof/databases/tasksDatabase"
 	"predprof/databases/usersDatabase"
 	"predprof/handlers"
+
 )
 
 func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -38,6 +39,8 @@ func main() {
 	http.HandleFunc("/login", corsMiddleware(handlers.Login))
 	http.HandleFunc("/getTasks", corsMiddleware(handlers.GetTasks))
 	http.HandleFunc("/addTask", corsMiddleware(handlers.AddTask))
+	http.HandleFunc("/userInfo", corsMiddleware(handlers.GetUserInfo))
+	http.HandleFunc("/send", handlers.HandleWebSocket)
 
 	fmt.Println("Server starting")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

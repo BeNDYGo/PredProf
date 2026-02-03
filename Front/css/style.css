@@ -25,7 +25,7 @@ body {
     color: #727477;
 }
 
-.register-btn {
+.headers-btn {
     background-color: #f8f9fa;
     color: #333;
     border: 1px solid #ddd;
@@ -34,20 +34,7 @@ body {
     font-size: 14px;
 }
 
-.login-btn {
-    background-color: #f8f9fa;
-    color: #333;
-    border: 1px solid #ddd;
-    padding: 8px 16px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.register-btn:hover {
-    background-color: #e9ecef;
-}
-
-.login-btn:hover {
+.headers-btn:hover {
     background-color: #e9ecef;
 }
 
@@ -57,34 +44,14 @@ body {
     margin-right: 10px;
 }
 
-.logout-btn {
-    color: rgb(0, 0, 0);
-    border: none;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: 12px;
-    border-radius: 3px;
-}
-
-.logout-btn:hover {
-    background-color: #e9ecef;
-}
-
 .navigation {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.tasks-btn {
-    background-color: #f8f9fa;
-    color: #333;
-    border: 1px solid #ddd;
-    padding: 8px 16px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.tasks-btn:hover {
-    background-color: #e9ecef;
+.container {
+    display: block;
+    align-items: center;
+    gap: 10px;
 }

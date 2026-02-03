@@ -23,7 +23,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = usersDatabase.CreateUser(user.Username, user.Password, 1000)
+	err = usersDatabase.CreateUser(user.Username, user.Email,user.Password)
+	
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)

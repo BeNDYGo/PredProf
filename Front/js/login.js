@@ -1,4 +1,3 @@
-const mainPage = 'main.html';
 const server = 'http://localhost:8080';
 
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -24,7 +23,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         
         if (response.ok) {
             localStorage.setItem('username', username);
-            window.location.href = mainPage;
+            window.location.href = 'main.html';
         } else {
             messageDiv.textContent = result.error;
             messageDiv.style.color = 'red';

@@ -11,7 +11,7 @@ function checkAuth() {
     if (username) {
         document.getElementById('auth-section').innerHTML = `
             <span class="username">${username}</span>
-            <button class="logout-btn" onclick="logout()">Выйти</button>
+            <button class="headers-btn" onclick="logout()">Выйти</button>
         `;
     }
 }

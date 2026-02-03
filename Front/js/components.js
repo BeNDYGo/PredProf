@@ -2,12 +2,12 @@ document.getElementById('header-container').innerHTML = `
         <div class="header">
         <div class="logo" onclick="goToMain()">TEST</div>
         <div class="navigation">
-            <button class="tasks-btn" onclick="goToTasks()">Задания</button>
-            <button class="pvp-btn" onclick="goToPVP()">PVP</button>
+            <button class="headers-btn" onclick="goToTasks()">Задания</button>
+            <button class="headers-btn" onclick="goToPVP()">PVP</button>
         </div>
         <div id="auth-section">
-            <button class="register-btn" onclick="goToRegister()">Регистрация</button>
-            <button class="login-btn" onclick="login()">Войти</button>
+            <button class="headers-btn" onclick="goToRegister()">Регистрация</button>
+            <button class="headers-btn" onclick="login()">Войти</button>
         </div>
         </div>
 `
