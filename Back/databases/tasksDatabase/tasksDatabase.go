@@ -55,7 +55,7 @@ func InitDB() error {
 	return err
 }
 
-func GetTasks(subject string, taskType string, difficulty string) ([]Task, error) {
+func GetAllTasks(subject string, taskType string, difficulty string) ([]Task, error) {
 	var targetDB *sql.DB
 	switch subject {
 	case "rus":
@@ -97,6 +97,8 @@ func GetTasks(subject string, taskType string, difficulty string) ([]Task, error
 
 	return tasks, nil
 }
+
+func GetTask(subject string){}
 
 func AddTask(subject string, task string, answer string, taskType string, difficulty string) error {
 	var targetDB *sql.DB

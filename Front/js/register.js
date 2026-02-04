@@ -1,5 +1,4 @@
-const mainPage = 'main.html';
-const server = 'http://localhost:8080';
+const server = 'https://deck-bedroom-peace-maximum.trycloudflare.com';
 
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -17,7 +16,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     }
     
     try {
-        const response = await fetch(server + '/register', {
+        const response = await fetch(server + '/api/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -33,7 +32,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         
         if (response.ok) {
             localStorage.setItem('username', username);
-            window.location.href = mainPage;
+            window.location.href = 'main.html';
         } else {
             messageDiv.textContent = result.error;
             messageDiv.style.color = 'red';

@@ -5,42 +5,100 @@ import (
 	"fmt"
 	"net/http"
 	"predprof/databases/usersDatabase"
+	"sync"
 
 	"github.com/gorilla/websocket"
 )
 
-type Message struct {
-	user usersDatabase.User
-	ans string
-}
-
 var upgrader = websocket.Upgrader{
-    ReadBufferSize:  1024,
-    WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
 }
 
-func HandleWebSocket(w http.ResponseWriter, r *http.Request){
+type Client struct {
+	conn  *websocket.Conn
+	match *Match
+}
+
+type Match struct {
+	players map[*Client]bool
+}
+
+var waiting *Client
+var mtx sync.Mutex
+
+func WsHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		http.Error(w, "WebSocket upgrade failed", http.StatusBadRequest)
+		fmt.Println("Upgrader fallied", err)
 		return
 	}
 
-	defer conn.Close()
+	client := &Client{conn: conn}
+	joinMatch(client)
 
+	defer func() {
+		leaveMatch(client)
+		conn.Close()
+	}()
+	
 	for {
-		var message Message
-
-		if err := conn.ReadJSON(&message); err != nil {
-			http.Error(w, "WebSocket read failed", http.StatusBadRequest)
+		var msg string
+		if err := conn.ReadJSON(&msg); err != nil {
+			fmt.Println("read JSON fallied", err)
 			return
 		}
-
-		fmt.Println("WebSocker message", message.user, message.ans)
+		for player := range client.match.players {
+			if player != client {
+				player.conn.WriteJSON(msg)
+			}
+		}
 	}
+}
+
+func joinMatch(client *Client) {
+	mtx.Lock()
+	defer mtx.Unlock()
+	if waiting == nil {
+		waiting = client
+		client.conn.WriteJSON("waiting opponent...")
+		return
+	}
+	match := Match{
+		players: make(map[*Client]bool),
+	}
+	match.players[waiting] = true
+	match.players[client] = true
+
+	waiting.match = &match
+	client.match = &match
+
+	waiting.conn.WriteJSON("match found")
+	client.conn.WriteJSON("match found")
+
+	fmt.Println("match created")
+
+	waiting = nil
+
+}
+
+func leaveMatch(client *Client) {
+	mtx.Lock()
+	defer mtx.Unlock()
+	if waiting == client {
+		waiting = nil
+	}
+	if client.match != nil {
+		for player := range client.match.players {
+			if player != client {
+				player.conn.WriteJSON("opponent disconected")
+				player.match = nil
+			}
+		}
+		client.match = nil
+	}
+
 }
 
 func GetUserInfo(w http.ResponseWriter, r *http.Request) {

@@ -1,8 +1,8 @@
-const server = 'http://localhost:8080';
+const server = 'https://deck-bedroom-peace-maximum.trycloudflare.com';
 
 async function getTasks(subject, taskType = "", difficulty = ""){
     try {
-        let url = server + '/getTasks?subject=' + encodeURIComponent(subject);
+        let url = server + '/api/getAllTasks?subject=' + encodeURIComponent(subject);
         if (taskType && taskType !== "none") {
             url += '&taskType=' + encodeURIComponent(taskType);
         }

@@ -59,15 +59,13 @@ func CreateUser(username, email, password string) error {
 
 func GetUser(username string) (User, error) {
 	row := usersDB.QueryRow(`
-		SELECT username, email, password, rating, decided, mistakes 
+		SELECT username, rating, decided, mistakes 
 		FROM users 
 		WHERE username = ?
 	`, username)
 	var user User
 	err := row.Scan(
 		&user.Username,
-		&user.Email,
-		&user.Password,
 		&user.Rating,
 		&user.Decided,
 		&user.Mistakes,

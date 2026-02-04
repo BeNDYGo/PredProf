@@ -8,7 +8,7 @@ import (
 	"predprof/databases/tasksDatabase"
 )
 
-func GetTasks(w http.ResponseWriter, r *http.Request) {
+func GetAllTasks(w http.ResponseWriter, r *http.Request) {
 	subject := r.URL.Query().Get("subject")
 	if subject == "" {
 		http.Error(w, "subject parameter is required", http.StatusBadRequest)
@@ -18,7 +18,7 @@ func GetTasks(w http.ResponseWriter, r *http.Request) {
 	taskType := r.URL.Query().Get("taskType")
 	difficulty := r.URL.Query().Get("difficulty")
 
-	tasks, err := tasksDatabase.GetTasks(subject, taskType, difficulty)
+	tasks, err := tasksDatabase.GetAllTasks(subject, taskType, difficulty)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)

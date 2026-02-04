@@ -1,4 +1,4 @@
-const server = 'http://localhost:8080';
+const server = 'https://deck-bedroom-peace-maximum.trycloudflare.com';
 
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -8,7 +8,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const messageDiv = document.getElementById('message');
     
     try {
-        const response = await fetch(server + '/login', {
+        const response = await fetch(server + '/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

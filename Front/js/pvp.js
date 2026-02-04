@@ -1,9 +1,10 @@
-const server = 'http://localhost:8080';
+const server = 'https://deck-bedroom-peace-maximum.trycloudflare.com';
+
 const username = localStorage.getItem('username');
 const userLableInfo = document.getElementById("userInfo");
 
 async function getUserInfo(username) {
-    url = server + "/userInfo?username=" + username
+    url = server + "/api/userInfo?username=" + username
     const response = await fetch(url, {
             method: "GET",
             headers: {
@@ -18,16 +19,16 @@ async function getUserInfo(username) {
         return null
     }
 }
-async function renderUser() {
+
+async function eloRender(){
     const data = await getUserInfo(username);
 
-    if (!data) return;
-
-    userLableInfo.innerHTML += `
-        <div>
-            ${data.username} — рейтинг: ${data.rating}
-        </div>
-    `;
+    if (data) {
+        userLableInfo.innerHTML += `
+            <div>
+                ${data.username}: ${data.rating} ELO
+            </div>
+        `;
+    }
 }
-
-renderUser();
+eloRender();
