@@ -22,9 +22,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "user not found"})
 		return
 	}
+	userPasswordServ := usersDatabase.GetUserPassword(user.Username)
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"message": "user logged in successfully"})
-	fmt.Println("Login: ", user.Username, user.Password)
+	if userPasswordServ == user.Password{
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]string{"message": "user logged in successfully"})
+		fmt.Println("Login: ", user.Username, user.Password)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid password"})
+	}
 }

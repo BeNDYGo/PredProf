@@ -2,19 +2,19 @@ package usersDatabase
 
 import (
 	"database/sql"
-	
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
 var usersDB *sql.DB
 
 type User struct {
-	Username string  `json:"username"`
-	Email string     `json:"email"`
-	Password string  `json:"password"`
-	Rating int    `json:"rating"`
-	Decided int   `json:"decided"`
-	Mistakes int  `json:"mistakes"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Rating   int    `json:"rating"`
+	Decided  int    `json:"decided"`
+	Mistakes int    `json:"mistakes"`
 }
 
 func InitDB() error {
@@ -55,6 +55,16 @@ func CreateUser(username, email, password string) error {
 	`, username, email, password)
 
 	return err
+}
+
+func GetUserPassword(username string) string {
+	row := usersDB.QueryRow("SELECT password FROM users WHERE username = ?", username)
+	var password string
+	err := row.Scan(&password)
+	if err != nil {
+		return ""
+	}
+	return password
 }
 
 func GetUser(username string) (User, error) {
