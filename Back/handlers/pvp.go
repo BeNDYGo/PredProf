@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"predprof/databases/tasksDatabase"
 	"predprof/databases/usersDatabase"
 	"sync"
 
@@ -23,12 +24,15 @@ type Client struct {
 
 type Match struct {
 	players map[*Client]bool
+	answer  string
 }
 
+// сервер хранит только одного ожидающего игрока
 var waiting *Client
 var mtx sync.Mutex
 
 func WsHandler(w http.ResponseWriter, r *http.Request) {
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println("Upgrader fallied", err)
@@ -36,37 +40,57 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := &Client{conn: conn}
-	joinMatch(client)
+	err = joinMatch(client)
+	if err != nil {
+		fmt.Println("joinMatch fallied", err)
+		return
+	}
 
 	defer func() {
 		leaveMatch(client)
 		conn.Close()
 	}()
-	
+
 	for {
-		var msg string
+		var msg map[string]interface{}
 		if err := conn.ReadJSON(&msg); err != nil {
 			fmt.Println("read JSON fallied", err)
 			return
 		}
-		for player := range client.match.players {
-			if player != client {
-				player.conn.WriteJSON(msg)
+
+		if client.match != nil {
+			if client.match.answer == msg["userAnswer"] {
+				// Уведомляем об итогах
+				for player := range client.match.players {
+					if player == client {
+						player.conn.WriteJSON(map[string]string{"message": "you win"})
+					} else {
+						player.conn.WriteJSON(map[string]string{"message": "you lose"})
+					}
+				}
+				return
+			} else {
+				client.conn.WriteJSON(map[string]string{"message": "incorrect"})
 			}
 		}
 	}
 }
 
-func joinMatch(client *Client) {
+func joinMatch(client *Client) error {
 	mtx.Lock()
 	defer mtx.Unlock()
 	if waiting == nil {
 		waiting = client
-		client.conn.WriteJSON("waiting opponent...")
-		return
+		client.conn.WriteJSON(map[string]string{"message": "waiting opponent..."})
+		return nil
 	}
+
+	// Get task for the match
+	task := tasksDatabase.GetTask("rus")
+
 	match := Match{
 		players: make(map[*Client]bool),
+		answer:  task.Answer,
 	}
 	match.players[waiting] = true
 	match.players[client] = true
@@ -74,13 +98,17 @@ func joinMatch(client *Client) {
 	waiting.match = &match
 	client.match = &match
 
-	waiting.conn.WriteJSON("match found")
-	client.conn.WriteJSON("match found")
+	waiting.conn.WriteJSON(map[string]string{"message": "match found"})
+	client.conn.WriteJSON(map[string]string{"message": "match found"})
+
+	// Отправка задачи
+	waiting.conn.WriteJSON(map[string]string{"task": task.Task})
+	client.conn.WriteJSON(map[string]string{"task": task.Task})
 
 	fmt.Println("match created")
 
 	waiting = nil
-
+	return nil
 }
 
 func leaveMatch(client *Client) {
@@ -92,7 +120,7 @@ func leaveMatch(client *Client) {
 	if client.match != nil {
 		for player := range client.match.players {
 			if player != client {
-				player.conn.WriteJSON("opponent disconected")
+				player.conn.WriteJSON(map[string]string{"message": "opponent disconected"})
 				player.match = nil
 			}
 		}

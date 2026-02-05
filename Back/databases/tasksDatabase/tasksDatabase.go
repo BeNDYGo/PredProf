@@ -98,7 +98,23 @@ func GetAllTasks(subject string, taskType string, difficulty string) ([]Task, er
 	return tasks, nil
 }
 
-func GetTask(subject string){}
+func GetTask(subject string) Task {
+	var task Task
+	var targetDB *sql.DB
+	switch subject {
+	case "rus":
+		targetDB = tasksRusDB
+	case "math":
+		targetDB = tasksMathDB
+	default:
+		return task
+	}
+	err := targetDB.QueryRow("SELECT task, answer, taskType, difficulty FROM tasks ORDER BY RANDOM() LIMIT 1").Scan(&task.Task, &task.Answer, &task.TaskType, &task.Difficulty)
+	if err != nil {
+		return task
+	}
+	return task
+}
 
 func AddTask(subject string, task string, answer string, taskType string, difficulty string) error {
 	var targetDB *sql.DB

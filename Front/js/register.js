@@ -1,4 +1,4 @@
-const server = 'https://deck-bedroom-peace-maximum.trycloudflare.com';
+const server = 'http://localhost:8080';
 
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
