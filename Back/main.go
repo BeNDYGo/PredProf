@@ -14,7 +14,7 @@ func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-Username")
 
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
@@ -39,8 +39,9 @@ func main() {
 	http.HandleFunc("/api/getAllTasks", corsMiddleware(handlers.GetAllTasks))
 	http.HandleFunc("/api/addTask", corsMiddleware(middleware.AdminOnly(handlers.AddTask)))
 	http.HandleFunc("/api/userInfo", corsMiddleware(handlers.GetUserInfo))
+	http.HandleFunc("/api/getUserAllInfo", corsMiddleware(middleware.AdminOnly(handlers.GetAllUserInfo)))
 	http.HandleFunc("/api/ws", handlers.WsHandler)
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){w.Write([]byte("OK"))})
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("OK")) })
 
 	fmt.Println("Server starting")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

@@ -11,7 +11,8 @@ import (
 func GetAllTasks(w http.ResponseWriter, r *http.Request) {
 	subject := r.URL.Query().Get("subject")
 	if subject == "" {
-		http.Error(w, "subject parameter is required", http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "нет предмета"})
 		return
 	}
 
@@ -35,13 +36,15 @@ func AddTask(w http.ResponseWriter, r *http.Request) {
 	var task tasksDatabase.Task
 	err := json.NewDecoder(r.Body).Decode(&task)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 		return
 	}
 
 	subject := r.URL.Query().Get("subject")
 	if subject == "" {
-		http.Error(w, "subject parameter is required", http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "нет предмета"})
 		return
 	}
 

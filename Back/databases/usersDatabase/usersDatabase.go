@@ -91,7 +91,29 @@ func GetUser(username string) (User, error) {
 		&user.Mistakes,
 	)
 	if err != nil {
-		return user, nil
+		return user, err
 	}
-	return user, err
+	return user, nil
+}
+
+func GetUserAllInfo(username string) (User, error) {
+	row := usersDB.QueryRow(`
+		SELECT username, email, password, role, rating, decided, mistakes 
+		FROM users 
+		WHERE username = ?
+	`, username)
+	var user User
+	err := row.Scan(
+		&user.Username,
+		&user.Email,
+		&user.Password,
+		&user.Role,
+		&user.Rating,
+		&user.Decided,
+		&user.Mistakes,
+	)
+	if err != nil {
+		return User{}, err
+	}
+	return user, nil
 }

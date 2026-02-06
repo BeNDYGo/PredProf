@@ -2,28 +2,23 @@ const server = 'http://localhost:8080';
 
 async function getTasks(subject, taskType = '', difficulty = ''){
     try {
-        let url = server + '/api/getAllTasks?subject=' + encodeURIComponent(subject);
+        let url = server + '/api/getAllTasks?subject=' + encodeURIComponent(subject)
         if (taskType && taskType !== 'none') {
-            url += '&taskType=' + encodeURIComponent(taskType);
+            url += '&taskType=' + encodeURIComponent(taskType)
         }
         if (difficulty && difficulty !== 'none') {
-            url += '&difficulty=' + encodeURIComponent(difficulty);
+            url += '&difficulty=' + encodeURIComponent(difficulty)
         }
         
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
+        const response = await fetch(url);
 
         if (response.ok){
-            return await response.json();
+            return await response.json()
         } else {
-            return null;
+            return null
         }
     } catch (error){
-        return null;
+        return null
     }
 }
 
@@ -33,14 +28,14 @@ function showAnswer(index){
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
-    var subjectElement = document.getElementById('subject');
-    var taskTypeElement = document.getElementById('taskType');
-    var difficultyElement = document.getElementById('difficulty');
+    var subjectElement = document.getElementById('subject')
+    var taskTypeElement = document.getElementById('taskType')
+    var difficultyElement = document.getElementById('difficulty')
     
     async function loadTasks() {
-        var selectedSubject = subjectElement.value;
-        var selectedTaskType = taskTypeElement.value;
-        var selectedDifficulty = difficultyElement.value;
+        var selectedSubject = subjectElement.value
+        var selectedTaskType = taskTypeElement.value
+        var selectedDifficulty = difficultyElement.value
         
         if (selectedSubject === 'none') return;
 
