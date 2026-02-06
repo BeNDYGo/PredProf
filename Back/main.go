@@ -7,6 +7,7 @@ import (
 	"predprof/databases/tasksDatabase"
 	"predprof/databases/usersDatabase"
 	"predprof/handlers"
+	"predprof/middleware"
 )
 
 func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -36,7 +37,7 @@ func main() {
 	http.HandleFunc("/api/register", corsMiddleware(handlers.Register))
 	http.HandleFunc("/api/login", corsMiddleware(handlers.Login))
 	http.HandleFunc("/api/getAllTasks", corsMiddleware(handlers.GetAllTasks))
-	http.HandleFunc("/api/addTask", corsMiddleware(handlers.AddTask))
+	http.HandleFunc("/api/addTask", corsMiddleware(middleware.AdminOnly(handlers.AddTask)))
 	http.HandleFunc("/api/userInfo", corsMiddleware(handlers.GetUserInfo))
 	http.HandleFunc("/api/ws", handlers.WsHandler)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){w.Write([]byte("OK"))})

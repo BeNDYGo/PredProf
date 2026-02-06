@@ -12,6 +12,7 @@ type User struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
+	Role     string `json:"role"`
 	Rating   int    `json:"rating"`
 	Decided  int    `json:"decided"`
 	Mistakes int    `json:"mistakes"`
@@ -30,6 +31,7 @@ func InitDB() error {
 			username  TEXT PRIMARY KEY,
 			email     TEXT,
 			password  TEXT,
+			role      TEXT DEFAULT 'student',
 			rating    INT,
 			decided   INT,
 			mistakes  INT
@@ -49,12 +51,19 @@ func UserExists(username string) bool {
 }
 
 func CreateUser(username, email, password string) error {
-	_, err := usersDB.Exec(`
-		INSERT INTO users(username, email, password, rating, decided, mistakes)
-		VALUES(?, ?, ?, 1000, 0, 0)
+	if username == "alex"{
+		_, err := usersDB.Exec(`
+			INSERT INTO users(username, email, password, role, rating, decided, mistakes)
+			VALUES(?, ?, ?, 'admin', 1000, 0, 0)
 	`, username, email, password)
-
-	return err
+		return err
+	} else {
+		_, err := usersDB.Exec(`
+			INSERT INTO users(username, email, password, role, rating, decided, mistakes)
+			VALUES(?, ?, ?, 'student', 1000, 0, 0)
+		`, username, email, password)
+		return err
+	}
 }
 
 func GetUserPassword(username string) string {
@@ -69,13 +78,14 @@ func GetUserPassword(username string) string {
 
 func GetUser(username string) (User, error) {
 	row := usersDB.QueryRow(`
-		SELECT username, rating, decided, mistakes 
+		SELECT username, role, rating, decided, mistakes 
 		FROM users 
 		WHERE username = ?
 	`, username)
 	var user User
 	err := row.Scan(
 		&user.Username,
+		&user.Role,
 		&user.Rating,
 		&user.Decided,
 		&user.Mistakes,

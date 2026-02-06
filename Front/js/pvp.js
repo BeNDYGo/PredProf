@@ -1,7 +1,7 @@
-const server = 'http://localhost:8080';
-const wsServer = 'ws://localhost:8080';
-const username = localStorage.getItem('username');
-const userLableInfo = document.getElementById("userInfo");
+const server = 'http://localhost:8080'
+const wsServer = 'ws://localhost:8080'
+const username = localStorage.getItem('username')
+const userLableInfo = document.getElementById("userInfo")
 
 async function getUserInfo(username) {
     url = server + '/api/userInfo?username=' + username;
@@ -10,18 +10,18 @@ async function getUserInfo(username) {
             headers: {
                 'Content-Type': 'application/json',
             }
-        });
+        })
     
     if (response.ok) {
-        const data = await response.json();
-        return data;
+        const data = await response.json()
+        return data
     } else {
         return null
     }
 }
 
 async function eloRender(){
-    const data = await getUserInfo(username);
+    const data = await getUserInfo(username)
 
     if (data) {
         userLableInfo.innerHTML += `
@@ -32,36 +32,41 @@ async function eloRender(){
     }
 }
 
-eloRender()
+document.addEventListener('DOMContentLoaded', () => {
+    eloRender()
+})
 
 function sendAnswer() {
-    const answerInput = document.getElementById('answerInput');
-    const answer = answerInput.value.trim();
+    const answerInput = document.getElementById('answerInput')
+    const answer = answerInput.value.trim()
     
     if (answer && socket) {
-        socket.send(JSON.stringify({"userAnswer": answer}));
-        answerInput.value = '';
+        socket.send(JSON.stringify({"userAnswer": answer}))
+        answerInput.value = ''
     }
 }
 
 function searchGame(){
-    socket = new WebSocket(wsServer + '/api/ws');
+    socket = new WebSocket(wsServer + '/api/ws')
+    const msg = document.getElementById("messageContainer")
+    msg.innerHTML = ""
+    
     socket.onopen = () => {
-        console.log("Connected");
+        console.log("Connected")
     };
     socket.onmessage = (event) => {
         const data = event.data;
         const parsed = JSON.parse(data);
-        const taskDiv = document.getElementById('divTask');
+        const taskDiv = document.getElementById('divTask')
+        
         
         if (parsed.task) {
             
             taskDiv.innerHTML = `<div class="task-container">
                 <div class="task-text">${parsed.task.replace(/\n/g, '<br>')}</div>
-                </div>`;
+                </div>`
         } else {
-            const msg = document.getElementById("messageContainer");
-            console.log(parsed.message);
+            console.log(parsed.message)
             
             let messageText = "";
             if (parsed.message === "match found") {
