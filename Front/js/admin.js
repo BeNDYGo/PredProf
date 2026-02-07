@@ -20,17 +20,24 @@ async function getUserInfo(username) {
 const checkButton = document.getElementById('check')
 const usernameInput = document.getElementById('username-input')
 const lableuserInfo = document.getElementById('user-info')
+const roleBtn = document.getElementById('role-btn')
+
+let currentUserInfo = null
 
 checkButton.addEventListener('click', async () => {
     username = usernameInput.value
     info = await getUserInfo(username)
     lableuserInfo.innerHTML = ''
+    roleBtn.style.display = 'none'
+    currentUserInfo = null
     
     if (info.error) {
         lableuserInfo.innerHTML = `<div class="error">Ошибка: ${info.error}</div>`
         return
     }
     
+    currentUserInfo = info
+
     lableuserInfo.innerHTML = `
         <div class="user-info-card">
             <h3>Информация о пользователе</h3>
@@ -42,6 +49,39 @@ checkButton.addEventListener('click', async () => {
             <p><strong>Поражения:</strong> ${info.losses}</p>
         </div>
     `
+
+    roleBtn.style.display = 'block'
+    if (info.role === 'admin') {
+        roleBtn.textContent = 'Понизить'
+        roleBtn.className = 'role-btn demote'
+    } else {
+        roleBtn.textContent = 'Повысить'
+        roleBtn.className = 'role-btn promote'
+    }
+})
+
+roleBtn.addEventListener('click', async () => {
+    if (!currentUserInfo) return
+    const currentUser = localStorage.getItem('username')
+    if (!currentUser) return
+
+    const newRole = currentUserInfo.role === 'admin' ? 'student' : 'admin'
+
+    try {
+        const response = await fetch(server + '/api/changeRole?username=' + currentUserInfo.username + '&role=' + newRole, {
+            headers: {
+                'X-Username': currentUser
+            }
+        })
+        const data = await response.json()
+        if (data.error) {
+            lableuserInfo.innerHTML += `<div class="error">Ошибка: ${data.error}</div>`
+            return
+        }
+        checkButton.click()
+    } catch (err) {
+        lableuserInfo.innerHTML += `<div class="error">Ошибка: ${err.message}</div>`
+    }
 })
 
 // Добавление задания

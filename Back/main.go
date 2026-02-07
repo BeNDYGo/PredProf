@@ -40,6 +40,7 @@ func main() {
 	http.HandleFunc("/api/addTask", corsMiddleware(middleware.AdminOnly(handlers.AddTask)))
 	http.HandleFunc("/api/userInfo", corsMiddleware(handlers.GetUserInfo))
 	http.HandleFunc("/api/getUserAllInfo", corsMiddleware(middleware.AdminOnly(handlers.GetAllUserInfo)))
+	http.HandleFunc("/api/changeRole", corsMiddleware(middleware.AdminOnly(handlers.ChangeUserRole)))
 	http.HandleFunc("/api/ws", handlers.WsHandler)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { w.Write([]byte("OK")) })
 

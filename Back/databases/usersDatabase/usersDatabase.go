@@ -52,19 +52,11 @@ func UserExists(username string) bool {
 }
 
 func CreateUser(username, email, password string) error {
-	if username == "alex" {
-		_, err := usersDB.Exec(`
-			INSERT INTO users(username, email, password, role, rating, wins, losses)
-			VALUES(?, ?, ?, 'admin', 1000, 0, 0)
-		`, username, email, password)
-		return err
-	} else {
 		_, err := usersDB.Exec(`
 			INSERT INTO users(username, email, password, role, rating, wins, losses)
 			VALUES(?, ?, ?, 'student', 1000, 0, 0)
 		`, username, email, password)
 		return err
-	}
 }
 
 func GetUserPassword(username string) string {
@@ -117,6 +109,11 @@ func GetUserAllInfo(username string) (User, error) {
 		return User{}, err
 	}
 	return user, nil
+}
+
+func UpdateUserRole(username, role string) error {
+	_, err := usersDB.Exec("UPDATE users SET role = ? WHERE username = ?", role, username)
+	return err
 }
 
 func UpdateAfterMatch(username string, newRating int, won bool) error {
