@@ -38,8 +38,8 @@ checkButton.addEventListener('click', async () => {
             <p><strong>Email:</strong> ${info.email}</p>
             <p><strong>Роль:</strong> ${info.role}</p>
             <p><strong>Рейтинг:</strong> ${info.rating}</p>
-            <p><strong>Победы:</strong> ${info.decided}</p>
-            <p><strong>Поражения:</strong> ${info.mistakes}</p>
+            <p><strong>Победы:</strong> ${info.wins}</p>
+            <p><strong>Поражения:</strong> ${info.losses}</p>
         </div>
     `
 })

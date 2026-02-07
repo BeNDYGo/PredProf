@@ -14,8 +14,8 @@ type User struct {
 	Password string `json:"password"`
 	Role     string `json:"role"`
 	Rating   int    `json:"rating"`
-	Decided  int    `json:"decided"`
-	Mistakes int    `json:"mistakes"`
+	Wins     int    `json:"wins"`
+	Losses   int    `json:"losses"`
 }
 
 func InitDB() error {
@@ -33,13 +33,14 @@ func InitDB() error {
 			password  TEXT,
 			role      TEXT DEFAULT 'student',
 			rating    INT,
-			decided   INT,
-			mistakes  INT
+			wins      INT DEFAULT 0,
+			losses    INT DEFAULT 0
 		)
 	`)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -51,15 +52,15 @@ func UserExists(username string) bool {
 }
 
 func CreateUser(username, email, password string) error {
-	if username == "alex"{
+	if username == "alex" {
 		_, err := usersDB.Exec(`
-			INSERT INTO users(username, email, password, role, rating, decided, mistakes)
+			INSERT INTO users(username, email, password, role, rating, wins, losses)
 			VALUES(?, ?, ?, 'admin', 1000, 0, 0)
-	`, username, email, password)
+		`, username, email, password)
 		return err
 	} else {
 		_, err := usersDB.Exec(`
-			INSERT INTO users(username, email, password, role, rating, decided, mistakes)
+			INSERT INTO users(username, email, password, role, rating, wins, losses)
 			VALUES(?, ?, ?, 'student', 1000, 0, 0)
 		`, username, email, password)
 		return err
@@ -78,7 +79,7 @@ func GetUserPassword(username string) string {
 
 func GetUser(username string) (User, error) {
 	row := usersDB.QueryRow(`
-		SELECT username, role, rating, decided, mistakes 
+		SELECT username, role, rating, wins, losses 
 		FROM users 
 		WHERE username = ?
 	`, username)
@@ -87,8 +88,8 @@ func GetUser(username string) (User, error) {
 		&user.Username,
 		&user.Role,
 		&user.Rating,
-		&user.Decided,
-		&user.Mistakes,
+		&user.Wins,
+		&user.Losses,
 	)
 	if err != nil {
 		return user, err
@@ -98,7 +99,7 @@ func GetUser(username string) (User, error) {
 
 func GetUserAllInfo(username string) (User, error) {
 	row := usersDB.QueryRow(`
-		SELECT username, email, password, role, rating, decided, mistakes 
+		SELECT username, email, password, role, rating, wins, losses 
 		FROM users 
 		WHERE username = ?
 	`, username)
@@ -109,11 +110,26 @@ func GetUserAllInfo(username string) (User, error) {
 		&user.Password,
 		&user.Role,
 		&user.Rating,
-		&user.Decided,
-		&user.Mistakes,
+		&user.Wins,
+		&user.Losses,
 	)
 	if err != nil {
 		return User{}, err
 	}
 	return user, nil
+}
+
+func UpdateAfterMatch(username string, newRating int, won bool) error {
+	if won {
+		_, err := usersDB.Exec(
+			"UPDATE users SET rating = ?, wins = wins + 1 WHERE username = ?",
+			newRating, username,
+		)
+		return err
+	}
+	_, err := usersDB.Exec(
+		"UPDATE users SET rating = ?, losses = losses + 1 WHERE username = ?",
+		newRating, username,
+	)
+	return err
 }

@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"net/http"
 	"predprof/databases/tasksDatabase"
 	"predprof/databases/usersDatabase"
@@ -18,8 +19,9 @@ var upgrader = websocket.Upgrader{
 }
 
 type Client struct {
-	conn  *websocket.Conn
-	match *Match
+	conn     *websocket.Conn
+	match    *Match
+	username string
 }
 
 type Match struct {
@@ -31,7 +33,22 @@ type Match struct {
 var waiting *Client
 var mtx sync.Mutex
 
+// calcElo рассчитывает новые рейтинги по формуле Elo (K=32)
+func calcElo(winnerRating, loserRating int) (newWinner, newLoser int) {
+	eWinner := 1.0 / (1.0 + math.Pow(10, float64(loserRating-winnerRating)/400.0))
+	eLoser := 1.0 - eWinner
+	K := 32.0
+	newWinner = winnerRating + int(K*(1.0-eWinner))
+	newLoser = loserRating + int(K*(0.0-eLoser))
+	return
+}
+
 func WsHandler(w http.ResponseWriter, r *http.Request) {
+	username := r.URL.Query().Get("username")
+	if username == "" {
+		http.Error(w, "username required", http.StatusBadRequest)
+		return
+	}
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -39,7 +56,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	client := &Client{conn: conn}
+	client := &Client{conn: conn, username: username}
 	err = joinMatch(client)
 	if err != nil {
 		fmt.Println("joinMatch fallied", err)
@@ -54,20 +71,39 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	for {
 		var msg map[string]interface{}
 		if err := conn.ReadJSON(&msg); err != nil {
-			fmt.Println("read JSON fallied", err)
+			fmt.Println("match closed")
 			return
 		}
 
 		if client.match != nil {
 			if client.match.answer == msg["userAnswer"] {
-				// Уведомляем об итогах
+				// Определяем победителя и проигравшего
+				winner := client
+				var loser *Client
 				for player := range client.match.players {
-					if player == client {
-						player.conn.WriteJSON(map[string]string{"message": "you win"})
-					} else {
-						player.conn.WriteJSON(map[string]string{"message": "you lose"})
+					if player != client {
+						loser = player
 					}
 				}
+
+				// Получаем текущие рейтинги и пересчитываем по Elo
+				winnerUser, _ := usersDatabase.GetUser(winner.username)
+				loserUser, _ := usersDatabase.GetUser(loser.username)
+				newWinnerRating, newLoserRating := calcElo(winnerUser.Rating, loserUser.Rating)
+
+				// Сохраняем в БД
+				usersDatabase.UpdateAfterMatch(winner.username, newWinnerRating, true)
+				usersDatabase.UpdateAfterMatch(loser.username, newLoserRating, false)
+
+				// Уведомляем игроков с новыми рейтингами
+				winner.conn.WriteJSON(map[string]interface{}{
+					"message":   "you win",
+					"newRating": newWinnerRating,
+				})
+				loser.conn.WriteJSON(map[string]interface{}{
+					"message":   "you lose",
+					"newRating": newLoserRating,
+				})
 				return
 			} else {
 				client.conn.WriteJSON(map[string]string{"message": "incorrect"})

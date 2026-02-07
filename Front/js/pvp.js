@@ -47,7 +47,7 @@ function sendAnswer() {
 }
 
 function searchGame(){
-    socket = new WebSocket(wsServer + '/api/ws')
+    socket = new WebSocket(wsServer + '/api/ws?username=' + username)
     const msg = document.getElementById("messageContainer")
     msg.innerHTML = ""
     
@@ -90,10 +90,12 @@ function searchGame(){
                 messageText = "Вы победили!";
                 msg.style.color = "green";
                 taskDiv.textContent = "";
+                updateEloDisplay(parsed.newRating);
             } else if (parsed.message === "you lose"){
                 messageText = "Противник победил!";
                 msg.style.color = "red";
                 taskDiv.textContent = "";
+                updateEloDisplay(parsed.newRating);
             }
             
             if (messageText) {
@@ -101,4 +103,8 @@ function searchGame(){
             }
         }
     }
+}
+
+function updateEloDisplay(newRating) {
+    userLableInfo.innerHTML = `<div>${username}: ${newRating} ELO</div>`;
 }
