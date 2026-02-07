@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"net/http"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"predprof/databases/usersDatabase"
 )
@@ -35,5 +35,5 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"message": "user created successfully"})
-	fmt.Println("New user:", user.Username, user.Password)
+	fmt.Println("New user registered:", user.Username)
 }

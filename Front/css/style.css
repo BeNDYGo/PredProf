@@ -29,9 +29,12 @@ body {
     background-color: #f8f9fa;
     color: #333;
     border: 1px solid #ddd;
+    border-radius: 4px;
     padding: 8px 16px;
     cursor: pointer;
     font-size: 14px;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.2s ease;
 }
 
 .headers-btn:hover {
@@ -53,10 +56,116 @@ body {
 
 .main-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    padding: 20px;
-    font-size: 24px;
-    font-weight: bold;
+    padding: 40px 20px;
     margin: 0 auto;
+    color: #333;
+    max-width: 600px;
+}
+
+#stats-section h2 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 30px 0;
+    color: #333;
+}
+
+#guest-message {
+    text-align: center;
+    font-size: 18px;
+    color: #999;
+    margin-top: 60px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.stats-item {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 16px 10px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stats-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+}
+
+.stats-label {
+    font-size: 12px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #333;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    display: inline-block;
+}
+
+.legend-wins {
+    background-color: #6c9;
+}
+
+.legend-losses {
+    background-color: #e88;
+}
+
+/* Global button style for pages using style.css */
+#check {
+    padding: 10px 20px;
+    background: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#check:hover {
+    background: #e9ecef;
 }

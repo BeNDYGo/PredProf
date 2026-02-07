@@ -153,9 +153,11 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+    font-family: Arial, sans-serif;
     cursor: pointer;
     align-self: flex-start;
     margin-top: 5px;
+    transition: background-color 0.2s ease;
 }
 
 #add-task-btn:hover {

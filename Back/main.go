@@ -33,6 +33,12 @@ func main() {
 	if err := tasksDatabase.InitDB(); err != nil {
 		panic(err)
 	}
+	/* множно выдать своему аккаунту роль админа при старте сервера
+	err := usersDatabase.UpdateUserRole("alex", "admin")
+	if err != nil {
+		fmt.Println(err)
+	}
+	*/
 
 	http.HandleFunc("/api/register", corsMiddleware(handlers.Register))
 	http.HandleFunc("/api/login", corsMiddleware(handlers.Login))

@@ -8,8 +8,48 @@
 </head>
 <body>
     <div id="header-container"></div>
-    <div class="main-container">Главная страница</div>
+    <div class="main-container">
+        <div id="stats-section" style="display: none;">
+            <h2 id="greeting"></h2>
+            <div class="stats-grid">
+                <div class="stats-item">
+                    <span class="stats-value" id="wins-count">0</span>
+                    <span class="stats-label">Победы</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-value" id="losses-count">0</span>
+                    <span class="stats-label">Поражения</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-value" id="win-percent">0%</span>
+                    <span class="stats-label">Процент побед</span>
+                </div>
+                <div class="stats-item">
+                    <span class="stats-value" id="rating-value">0</span>
+                    <span class="stats-label">Рейтинг</span>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div id="chart"></div>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color legend-wins"></span>
+                        <span>Победы</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color legend-losses"></span>
+                        <span>Поражения</span>
+                    </div>
+                </div>
+            </div>
+            <p id="no-data" style="display: none; color: #999; text-align: center;">Нет данных для отображения</p>
+        </div>
+        <div id="guest-message" style="display: none;">
+            <p>Войдите, чтобы увидеть статистику</p>
+        </div>
+    </div>
     <script src="js/components.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

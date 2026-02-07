@@ -7,6 +7,41 @@
     padding: 20px;
 }
 
+.container h1 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 2px solid #909ca86e;
+    padding-bottom: 10px;
+}
+
+.container h3 {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.subjects {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.subjects select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+    font-family: Arial, sans-serif;
+}
+
+.subjects select:focus {
+    outline: none;
+    border-color: #909ca86e;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
 .tasks {
     display: flex;
     flex-direction: column;
@@ -14,4 +49,42 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 10px;
+    gap: 15px;
+}
+
+.task-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.task-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.task-item p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.show-answer-btn {
+    padding: 10px 20px;
+    background: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.show-answer-btn:hover {
+    background: #e9ecef;
 }

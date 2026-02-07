@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var usersDB *sql.DB
@@ -52,21 +53,25 @@ func UserExists(username string) bool {
 }
 
 func CreateUser(username, email, password string) error {
-		_, err := usersDB.Exec(`
-			INSERT INTO users(username, email, password, role, rating, wins, losses)
-			VALUES(?, ?, ?, 'student', 1000, 0, 0)
-		`, username, email, password)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
 		return err
+	}
+	_, err = usersDB.Exec(`
+		INSERT INTO users(username, email, password, role, rating, wins, losses)
+		VALUES(?, ?, ?, 'student', 1000, 0, 0)
+	`, username, email, string(hashedPassword))
+	return err
 }
 
-func GetUserPassword(username string) string {
-	row := usersDB.QueryRow("SELECT password FROM users WHERE username = ?", username)
-	var password string
-	err := row.Scan(&password)
+func CheckPassword(username, password string) (bool, error) {
+	var hashedPassword string
+	err := usersDB.QueryRow("SELECT password FROM users WHERE username = ?", username).Scan(&hashedPassword)
 	if err != nil {
-		return ""
+		return false, err
 	}
-	return password
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err == nil, nil
 }
 
 func GetUser(username string) (User, error) {
