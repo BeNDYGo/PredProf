@@ -24,9 +24,14 @@
 |---|---|
 | Go | Серверная логика |
 | `net/http` | HTTP-сервер |
-| SQLite3 (`go-sqlite3`) | База данных |
 | Gorilla WebSocket | PvP в реальном времени |
 | `golang.org/x/crypto` | Хеширование паролей (bcrypt) |
+
+### Database
+
+| Технология | Назначение |
+|---|---|
+| SQLite3 (`go-sqlite3`) | Хранение пользователей и заданий |
 
 ### Frontend
 
