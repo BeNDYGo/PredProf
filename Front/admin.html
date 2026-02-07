@@ -12,9 +12,60 @@
     
     <div class="admin-container">
         <div class="admin-section tasks-section">
-            <h2>Задания</h2>
+            <h2>Добавить задание</h2>
             <div class="tasks-content">
+                <div class="task-form">
+                    <div class="form-group">
+                        <label for="task-name">Задание:</label>
+                        <textarea id="task-name" placeholder="Введите задание" rows="2"></textarea>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="task-text">Текст задания:</label>
+                        <textarea id="task-text" placeholder="Введите текст задания" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-answer">Ответ:</label>
+                        <input type="text" id="task-answer" placeholder="Введите ответ">
+                    </div>
+
+                    <div class="form-selects">
+                        <div class="form-group">
+                            <label for="task-subject">Предмет:</label>
+                            <select id="task-subject">
+                                <option value="rus">Русский</option>
+                                <option value="math">Математика</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="task-type">Тип задания:</label>
+                            <select id="task-type">
+                                <option value="type4">Задание 4</option>
+                                <option value="type5">Задание 5</option>
+                                <option value="type6">Задание 6</option>
+                                <option value="type7">Задание 7</option>
+                                <option value="type8">Задание 8</option>
+                                <option value="type9">Задание 9</option>
+                                <option value="type10">Задание 10</option>
+                                <option value="type11">Задание 11</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="task-difficulty">Сложность:</label>
+                            <select id="task-difficulty">
+                                <option value="easy">легко</option>
+                                <option value="medium">средне</option>
+                                <option value="hard">тяжело</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button id="add-task-btn">Добавить задание</button>
+                    <div id="task-status"></div>
+                </div>
             </div>
         </div>
         
