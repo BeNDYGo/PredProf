@@ -1,4 +1,10 @@
-# PredProf — Образовательная платформа для подготовки к экзаменам
+<div align="center"> <h1>TEST</h1></div>
+
+![Downloads](https://img.shields.io/github/downloads/BeNDYGo/PredProf/total.svg)
+![GitHub Repo stars](https://img.shields.io/github/stars/BeNDYGo/PredProf)
+
+- ![TG-img](https://cdn-icons-png.freepik.com/16/15047/15047595.png) [Pipodripo](https://t.me/pipodripo)
+- ![Gmail-img](https://cdn-icons-png.freepik.com/16/5968/5968534.png?ga=GA1.1.1230537149.1769259151) bendygo6@gmail.com
 
 Веб-приложение для подготовки к экзаменам по русскому языку и математике с системой заданий, PvP-режимом и панелью администратора.
 
@@ -140,3 +146,7 @@ go run main.go
 ### Открытие клиента
 
 Откройте файл `Front/main.html` в браузере или используйте любой локальный HTTP-сервер для раздачи статических файлов из папки `Front/`.
+
+# Связь со мной!
+- ![TG-img](https://cdn-icons-png.freepik.com/16/15047/15047595.png) [Pipodripo](https://t.me/pipodripo)
+- ![Gmail-img](https://cdn-icons-png.freepik.com/16/5968/5968534.png?ga=GA1.1.1230537149.1769259151) bendygo6@gmail.com
