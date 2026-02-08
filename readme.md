@@ -168,6 +168,11 @@ go run main.go
 
 Откройте файл `Front/main.html` в браузере или используйте любой локальный HTTP-сервер для раздачи статических файлов из папки `Front/`.
 
+## Видеоролик 
+Видеоролик доступен по ссылке: [видео](https://rutube.ru/video/private/38d8321b01959c6af7e06651a967bfbc/?p=uQhNXQH1CEXW3hiBqxh4Nw)
+
+https://rutube.ru/video/private/38d8321b01959c6af7e06651a967bfbc/?p=uQhNXQH1CEXW3hiBqxh4Nw
+
 # Связь со мной!
 - ![TG-img](https://cdn-icons-png.freepik.com/16/15047/15047595.png) [Pipodripo](https://t.me/pipodripo)
 - ![Gmail-img](https://cdn-icons-png.freepik.com/16/5968/5968534.png?ga=GA1.1.1230537149.1769259151) bendygo6@gmail.com
